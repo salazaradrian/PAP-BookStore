@@ -1,4 +1,4 @@
-﻿@model IEnumerable<string>
+﻿@model IEnumerable<PAP.Generators.GeneratorStatus>
 @{
     ViewBag.Title = "Admin";
 }
@@ -19,27 +19,36 @@
     <div class="alert alert-danger alert-dismissible fade show" role="alert" style="white-space: pre-line;">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
 }
 
-<p class="text-muted">Genera datos de prueba por tabla. Solo funciona si la tabla está vacía; respeta el orden de dependencias.</p>
+<p class="text-muted">Genera datos de prueba por tabla. El botón se habilita cuando las tablas de las que depende ya tienen datos.</p>
 
 <div class="table-responsive">
     <table class="table table-striped table-hover align-middle">
         <thead>
             <tr>
-                <th>Entidad</th>
-                <th class="text-end">Acción</th>
+                <th>Tabla</th>
+                <th class="text-end">Generar</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (string name in Model)
+            @foreach (var item in Model)
             {
                 <tr>
-                    <td>@name</td>
+                    <td>
+                        @item.TableName
+                        @if (item.HasData)
+                        {
+                            <span class="badge bg-success ms-2">Con datos</span>
+                        }
+                    </td>
                     <td class="text-end">
                         @using (Html.BeginForm("Generate", "Admin", FormMethod.Post, new { @class = "d-inline" }))
                         {
                             @Html.AntiForgeryToken()
-                            <input type="hidden" name="entity" value="@name" />
-                            <button type="submit" class="btn btn-primary btn-sm">Generar</button>
+                            <input type="hidden" name="entity" value="@item.EntityName" />
+                            <button type="submit" class="btn btn-primary btn-sm" @(item.CanGenerate ? "" : "disabled")
+                                    title="@(item.CanGenerate ? "" : "Requiere datos en: " + string.Join(", ", item.MissingDependencies))">
+                                Generar
+                            </button>
                         }
                     </td>
                 </tr>

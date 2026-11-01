@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PAP.Generators
 {
@@ -8,15 +9,58 @@ namespace PAP.Generators
     /// </summary>
     public static class GeneratorCatalog
     {
-        public static IList<string> EntityNames()
+        // Parent tables that must already contain data before an entity can be generated.
+        private static readonly Dictionary<string, string[]> Dependencies = new Dictionary<string, string[]>
         {
-            var names = new List<string>();
+            { "Roles", new string[0] },
+            { "Categories", new string[0] },
+            { "Genres", new string[0] },
+            { "Publishers", new string[0] },
+            { "Authors", new string[0] },
+            { "Suppliers", new string[0] },
+            { "Customers", new string[0] },
+            { "Employees", new[] { "Roles" } },
+            { "Addresses", new[] { "Customers" } },
+            { "Books", new[] { "Authors", "Categories", "Genres", "Publishers" } },
+            { "Inventories", new[] { "Books" } },
+            { "ShoppingCarts", new[] { "Customers" } },
+            { "CartItems", new[] { "ShoppingCarts", "Books" } },
+            { "Orders", new[] { "Customers", "Addresses" } },
+            { "OrderItems", new[] { "Orders", "Books" } },
+            { "Payments", new[] { "Orders", "OrderItems" } },
+            { "PurchaseOrders", new[] { "Suppliers" } },
+            { "PurchaseOrderItems", new[] { "PurchaseOrders", "Books" } },
+            { "Reviews", new[] { "Customers", "Books" } }
+        };
+
+        /// <summary>
+        /// One status per entity, in generation order. A button is enabled when every parent table has data.
+        /// </summary>
+        public static IList<GeneratorStatus> GetStatuses()
+        {
+            var hasData = new Dictionary<string, bool>();
+            var order = new List<string>();
             foreach (IGenerator generator in CreateAll())
             {
-                names.Add(generator.EntityName);
-                generator.Dispose();
+                using (generator)
+                {
+                    order.Add(generator.EntityName);
+                    hasData[generator.EntityName] = generator.HasData();
+                }
             }
-            return names;
+
+            return order.Select(name =>
+            {
+                List<string> missing = Dependencies[name].Where(parent => !hasData[parent]).ToList();
+                return new GeneratorStatus
+                {
+                    EntityName = name,
+                    TableName = "dbo." + (name == "Inventories" ? "Inventory" : name),
+                    HasData = hasData[name],
+                    CanGenerate = missing.Count == 0,
+                    MissingDependencies = missing
+                };
+            }).ToList();
         }
 
         /// <summary>Creates a new generator by entity name, or null if the name is unknown.</summary>

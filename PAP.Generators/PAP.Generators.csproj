@@ -60,6 +60,7 @@
     <Compile Include="EmployeesGenerator.cs" />
     <Compile Include="GeneratorBase.cs" />
     <Compile Include="GeneratorCatalog.cs" />
+    <Compile Include="GeneratorStatus.cs" />
     <Compile Include="GenresGenerator.cs" />
     <Compile Include="IGenerator.cs" />
     <Compile Include="InventoriesGenerator.cs" />

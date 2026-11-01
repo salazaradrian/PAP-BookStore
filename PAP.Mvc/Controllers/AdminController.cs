@@ -1,5 +1,6 @@
 ﻿using PAP.Generators;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace PAP.Mvc.Controllers
@@ -8,29 +9,36 @@ namespace PAP.Mvc.Controllers
     {
         public ActionResult Index()
         {
-            return View(GeneratorCatalog.EntityNames());
+            return View(GeneratorCatalog.GetStatuses());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Generate(string entity)
         {
+            GeneratorStatus status = GeneratorCatalog.GetStatuses().FirstOrDefault(x => x.EntityName == entity);
+            if (status == null)
+            {
+                TempData["Error"] = "La entidad '" + entity + "' no existe.";
+                return RedirectToAction("Index");
+            }
+
+            if (!status.CanGenerate)
+            {
+                TempData["Error"] = "Primero debe generar: " + string.Join(", ", status.MissingDependencies) + ".";
+                return RedirectToAction("Index");
+            }
+
+            if (status.HasData)
+            {
+                TempData["Error"] = "La tabla " + status.EntityName + " ya contiene datos. No se generó nada.";
+                return RedirectToAction("Index");
+            }
+
             using (IGenerator generator = GeneratorCatalog.Create(entity))
             {
-                if (generator == null)
-                {
-                    TempData["Error"] = "La entidad '" + entity + "' no existe.";
-                    return RedirectToAction("Index");
-                }
-
                 try
                 {
-                    if (generator.HasData())
-                    {
-                        TempData["Error"] = "La tabla " + generator.EntityName + " ya contiene datos. No se generó nada.";
-                        return RedirectToAction("Index");
-                    }
-
                     int count = generator.Generate();
                     TempData["Success"] = "Se generaron " + count + " registros en " + generator.EntityName + ".";
                 }
