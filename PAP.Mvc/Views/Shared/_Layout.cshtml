@@ -25,7 +25,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1 flex-wrap">
+                <ul class="navbar-nav flex-grow-1">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
@@ -33,25 +33,30 @@
                     <li>@Html.ActionLink("Cards", "Catalog", "Library", new { vista = "cards" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Crear", "Create", "Library", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Binder", "PrecioDemo", "Library", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Direcciones", "Index", "Addresses", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Autores", "Index", "Authors", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Libros", "Index", "Books", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Artículos del carrito", "Index", "CartItems", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Categorías", "Index", "Categories", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Clientes", "Index", "Customers", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Empleados", "Index", "Employees", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Géneros", "Index", "Genres", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Inventario", "Index", "Inventories", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Pedidos", "Index", "Orders", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Artículos de pedidos", "Index", "OrderItems", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Pagos", "Index", "Payments", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Editoriales", "Index", "Publishers", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Órdenes de compra", "Index", "PurchaseOrders", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Artículos de órdenes de compra", "Index", "PurchaseOrderItems", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Reseñas", "Index", "Reviews", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Roles", "Index", "Roles", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Carritos de compras", "Index", "ShoppingCarts", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Proveedores", "Index", "Suppliers", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Administración</a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Artículos de pedidos", "Index", "OrderItems", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Artículos de órdenes de compra", "Index", "PurchaseOrderItems", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Artículos del carrito", "Index", "CartItems", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Autores", "Index", "Authors", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Carritos de compras", "Index", "ShoppingCarts", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Categorías", "Index", "Categories", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Clientes", "Index", "Customers", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Direcciones", "Index", "Addresses", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Editoriales", "Index", "Publishers", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Empleados", "Index", "Employees", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Géneros", "Index", "Genres", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Inventario", "Index", "Inventories", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Libros", "Index", "Books", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Pagos", "Index", "Payments", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Pedidos", "Index", "Orders", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Proveedores", "Index", "Suppliers", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Reseñas", "Index", "Reviews", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Roles", "Index", "Roles", new { area = "" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Órdenes de compra", "Index", "PurchaseOrders", new { area = "" }, new { @class = "dropdown-item" })</li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
