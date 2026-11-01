@@ -26,5 +26,23 @@ namespace PAP.DataAccess
         }
     
         public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Author> Authors { get; set; }
+        public virtual DbSet<CartItem> CartItems { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Genre> Genres { get; set; }
+        public virtual DbSet<Inventory> Inventories { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<Publisher> Publishers { get; set; }
+        public virtual DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public virtual DbSet<Review> Reviews { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public virtual DbSet<Supplier> Suppliers { get; set; }
     }
 }
