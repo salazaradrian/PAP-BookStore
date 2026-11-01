@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAP.Repositories", "PAP.Rep
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PAP.BookStoreDB", "PAP.BookStoreDB\PAP.BookStoreDB.sqlproj", "{B233BCD2-EF7C-4F32-A63F-70E3CC2BC3D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PAP.Generators", "PAP.Generators\PAP.Generators.csproj", "{B7E7B096-FCBF-4A3D-BB16-4F2E5779F4F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{B233BCD2-EF7C-4F32-A63F-70E3CC2BC3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B233BCD2-EF7C-4F32-A63F-70E3CC2BC3D7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B233BCD2-EF7C-4F32-A63F-70E3CC2BC3D7}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B7E7B096-FCBF-4A3D-BB16-4F2E5779F4F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7E7B096-FCBF-4A3D-BB16-4F2E5779F4F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7E7B096-FCBF-4A3D-BB16-4F2E5779F4F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7E7B096-FCBF-4A3D-BB16-4F2E5779F4F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

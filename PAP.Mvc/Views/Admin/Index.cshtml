@@ -1,0 +1,49 @@
+﻿@model IEnumerable<string>
+@{
+    ViewBag.Title = "Admin";
+}
+
+<div class="d-flex justify-content-between align-items-center my-3">
+    <h2 class="mb-0">Administración de datos</h2>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="white-space: pre-line;">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
+}
+
+<p class="text-muted">Genera datos de prueba por tabla. Solo funciona si la tabla está vacía; respeta el orden de dependencias.</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Entidad</th>
+                <th class="text-end">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (string name in Model)
+            {
+                <tr>
+                    <td>@name</td>
+                    <td class="text-end">
+                        @using (Html.BeginForm("Generate", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="entity" value="@name" />
+                            <button type="submit" class="btn btn-primary btn-sm">Generar</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -32,6 +32,16 @@ namespace PAP.Repositories
             _set.Add(book);
             Save();
         }
+        public void AddRange(IEnumerable<Book> books, IDictionary<Book, List<int>> authorIdsByBook)
+        {
+            foreach (Book book in books)
+            {
+                List<int> ids;
+                SetAuthors(book, authorIdsByBook.TryGetValue(book, out ids) ? ids : null);
+            }
+            _set.AddRange(books);
+            Save();
+        }
 
         public void Update(int id, Book values, IEnumerable<int> authorIds)
         {

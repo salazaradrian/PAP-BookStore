@@ -149,6 +149,22 @@ namespace PAP.Repositories
                 Save();
             }
         }
+        /// <summary>
+        /// Returns true when the table has at least one row.
+        /// </summary>
+        public virtual bool Any()
+        {
+            return _set.Any();
+        }
+
+        /// <summary>
+        /// Adds many entities and saves them with a single SaveChanges (bulk insert).
+        /// </summary>
+        public virtual void AddRange(IEnumerable<T> entities)
+        {
+            _set.AddRange(entities);
+            Save();
+        }
 
         /// <summary>
         /// Saves all pending changes to the database.
