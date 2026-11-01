@@ -1,5 +1,6 @@
 ﻿using PAP.DataAccess;
 using PAP.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -38,6 +39,11 @@ namespace PAP.Repositories
         void Update(T entity);
 
         /// <summary>
+        /// Copies the scalar values of <paramref name="values"/> onto the stored entity with the given id.
+        /// </summary>
+        void Update(int id, T values);
+
+        /// <summary>
         /// Deletes an entity from the database by its unique identifier.
         /// </summary>
         /// <param name="id">The unique identifier of the entity to delete</param>
@@ -54,7 +60,7 @@ namespace PAP.Repositories
     /// Implements the Repository pattern to encapsulate data access logic.
     /// </summary>
     /// <typeparam name="T">The entity type that this repository manages</typeparam>
-    public class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public class RepositoryBase<T> : IRepositoryBase<T>, IDisposable where T : class
     {
         /// <summary>
         /// The Entity Framework database context used for data access.
@@ -79,7 +85,7 @@ namespace PAP.Repositories
         /// Retrieves all entities of type T from the database.
         /// </summary>
         /// <returns>A collection of all entities</returns>
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             return _set.ToList();
         }
@@ -89,7 +95,7 @@ namespace PAP.Repositories
         /// </summary>
         /// <param name="id">The unique identifier of the entity to retrieve</param>
         /// <returns>The entity with the specified ID, or null if not found</returns>
-        public T GetById(int id)
+        public virtual T GetById(int id)
         {
             return _set.Find(id);
         }
@@ -108,7 +114,7 @@ namespace PAP.Repositories
         /// Updates an existing entity in the database and saves changes immediately.
         /// </summary>
         /// <param name="entity">The entity to update</param>
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             if (_context.Entry(entity).State == EntityState.Detached)
                 _set.Attach(entity);
@@ -118,10 +124,23 @@ namespace PAP.Repositories
         }
 
         /// <summary>
+        /// Updates the stored entity with the given id using the scalar values of another instance.
+        /// </summary>
+        public virtual void Update(int id, T values)
+        {
+            T existing = GetById(id);
+            if (existing == null)
+                throw new InvalidOperationException("El registro ya no existe.");
+
+            _context.Entry(existing).CurrentValues.SetValues(values);
+            Save();
+        }
+
+        /// <summary>
         /// Deletes an entity from the database by its unique identifier and saves changes immediately.
         /// </summary>
         /// <param name="id">The unique identifier of the entity to delete</param>
-        public void Delete(int id)
+        public virtual void Delete(int id)
         {
             T entityToDelete = _set.Find(id);
             if (entityToDelete != null)
@@ -137,6 +156,14 @@ namespace PAP.Repositories
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Releases the database context.
+        /// </summary>
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

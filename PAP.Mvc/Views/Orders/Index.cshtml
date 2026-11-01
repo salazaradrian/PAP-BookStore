@@ -1,0 +1,184 @@
+﻿@model IEnumerable<PAP.DataAccess.Order>
+@using PAP.Business
+@{
+    ViewBag.Title = "Pedidos";
+}
+
+<div id="crud-root" data-details-url="@Url.Action("Details")" data-singular="pedido">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="mb-0">Pedidos</h2>
+        <button type="button" class="btn btn-primary" data-crud="create">Agregar</button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="white-space: pre-line;">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Fecha del pedido</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                    <th class="text-center">Detalle</th>
+                    <th class="text-center">Editar</th>
+                    <th class="text-center">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(item.Id)</td>
+                        <td>@(item.Customer?.FirstName + " " + item.Customer?.LastName)</td>
+                        <td>@(item.OrderDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))</td>
+                        <td>@item.Status</td>
+                        <td>@(item.Total.ToString("N2"))</td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-secondary" data-crud="details" data-id="@item.Id">Detalle</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary" data-crud="edit" data-id="@item.Id">Editar</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger" data-crud="delete" data-id="@item.Id" data-name="@("Pedido #" + item.Id)">Eliminar</button></td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center text-muted">No hay registros.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <form id="entityForm" method="post" data-create-action="@Url.Action("Create")" data-edit-action="@Url.Action("Edit")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_CustomerId">Cliente</label>
+<select class="form-select" id="f_CustomerId" name="CustomerId" required>
+<option value="">-- Seleccione --</option>
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Customers)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_ShippingAddressId">Dirección de envío</label>
+<select class="form-select" id="f_ShippingAddressId" name="ShippingAddressId">
+<option value="">-- Seleccione --</option>
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Addresses)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Status">Estado</label>
+<input class="form-control" type="text" list="dl_Status" id="f_Status" name="Status" maxlength="30" value="Pending" />
+<datalist id="dl_Status">
+<option value="Pending"></option>
+<option value="Paid"></option>
+<option value="Shipped"></option>
+<option value="Delivered"></option>
+<option value="Cancelled"></option>
+</datalist>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Subtotal">Subtotal</label>
+<input class="form-control" type="number" step="any" id="f_Subtotal" name="Subtotal" min="0" max="9999999999999" required value="0" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_TaxAmount">Impuestos</label>
+<input class="form-control" type="number" step="any" id="f_TaxAmount" name="TaxAmount" min="0" max="9999999999999" required value="0" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_ShippingCost">Costo de envío</label>
+<input class="form-control" type="number" step="any" id="f_ShippingCost" name="ShippingCost" min="0" max="9999999999999" required value="0" />
+</div>
+<div class="col-12 mb-3">
+<label class="form-label" for="f_Notes">Notas</label>
+<textarea class="form-control" id="f_Notes" name="Notes" rows="3" maxlength="500"></textarea>
+</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0">
+<dt class="col-sm-4">Cliente</dt><dd class="col-sm-8" data-field="CustomerName"></dd>
+<dt class="col-sm-4">Dirección de envío</dt><dd class="col-sm-8" data-field="ShippingAddress"></dd>
+<dt class="col-sm-4">Fecha del pedido</dt><dd class="col-sm-8" data-field="OrderDate"></dd>
+<dt class="col-sm-4">Estado</dt><dd class="col-sm-8" data-field="Status"></dd>
+<dt class="col-sm-4">Subtotal</dt><dd class="col-sm-8" data-field="SubtotalText"></dd>
+<dt class="col-sm-4">Impuestos</dt><dd class="col-sm-8" data-field="TaxAmountText"></dd>
+<dt class="col-sm-4">Costo de envío</dt><dd class="col-sm-8" data-field="ShippingCostText"></dd>
+<dt class="col-sm-4">Total</dt><dd class="col-sm-8" data-field="TotalText"></dd>
+<dt class="col-sm-4">Notas</dt><dd class="col-sm-8" data-field="Notes"></dd>
+<dt class="col-sm-4">Actualizado</dt><dd class="col-sm-8" data-field="UpdatedAt"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="@Url.Action("Delete")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar pedido</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Seguro que desea eliminar <strong id="deleteName"></strong>? Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/crud.js"></script>
+}

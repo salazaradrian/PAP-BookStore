@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace PAP.Repositories
 {
-    public class BookRepository : RepositoryBase<Book>
+    public partial class BookRepository : RepositoryBase<Book>
     {
         public IEnumerable<Book> MyBooks()
         {

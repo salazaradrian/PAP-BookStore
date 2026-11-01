@@ -1,0 +1,181 @@
+﻿@model IEnumerable<PAP.DataAccess.Address>
+@using PAP.Business
+@{
+    ViewBag.Title = "Direcciones";
+}
+
+<div id="crud-root" data-details-url="@Url.Action("Details")" data-singular="dirección">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="mb-0">Direcciones</h2>
+        <button type="button" class="btn btn-primary" data-crud="create">Agregar</button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="white-space: pre-line;">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Tipo</th>
+                    <th>Calle</th>
+                    <th>Ciudad</th>
+                    <th>País</th>
+                    <th>Predeterminada</th>
+                    <th class="text-center">Detalle</th>
+                    <th class="text-center">Editar</th>
+                    <th class="text-center">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(item.Customer?.FirstName + " " + item.Customer?.LastName)</td>
+                        <td>@item.AddressType</td>
+                        <td>@item.Street</td>
+                        <td>@item.City</td>
+                        <td>@item.Country</td>
+                        <td>@(item.IsDefault ? "Sí" : "No")</td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-secondary" data-crud="details" data-id="@item.Id">Detalle</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary" data-crud="edit" data-id="@item.Id">Editar</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger" data-crud="delete" data-id="@item.Id" data-name="@(item.Street)">Eliminar</button></td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-muted">No hay registros.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <form id="entityForm" method="post" data-create-action="@Url.Action("Create")" data-edit-action="@Url.Action("Edit")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_CustomerId">Cliente</label>
+<select class="form-select" id="f_CustomerId" name="CustomerId" required>
+<option value="">-- Seleccione --</option>
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Customers)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_AddressType">Tipo</label>
+<select class="form-select" id="f_AddressType" name="AddressType" required>
+<option value="Shipping" selected>Shipping (envío)</option>
+<option value="Billing">Billing (facturación)</option>
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Street">Calle</label>
+<input class="form-control" type="text" id="f_Street" name="Street" maxlength="200" required />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_City">Ciudad</label>
+<input class="form-control" type="text" id="f_City" name="City" maxlength="100" required />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_State">Estado / Provincia</label>
+<input class="form-control" type="text" id="f_State" name="State" maxlength="100" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_PostalCode">Código postal</label>
+<input class="form-control" type="text" id="f_PostalCode" name="PostalCode" maxlength="20" required />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Country">País</label>
+<input class="form-control" type="text" id="f_Country" name="Country" maxlength="100" required />
+</div>
+<div class="col-md-6 mb-3">
+<div class="form-check mt-4">
+<input class="form-check-input" type="checkbox" id="f_IsDefault" name="IsDefault" value="true" />
+<input type="hidden" name="IsDefault" value="false" />
+<label class="form-check-label" for="f_IsDefault">Predeterminada</label>
+</div>
+</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de dirección</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0">
+<dt class="col-sm-4">Cliente</dt><dd class="col-sm-8" data-field="CustomerName"></dd>
+<dt class="col-sm-4">Tipo</dt><dd class="col-sm-8" data-field="AddressType"></dd>
+<dt class="col-sm-4">Calle</dt><dd class="col-sm-8" data-field="Street"></dd>
+<dt class="col-sm-4">Ciudad</dt><dd class="col-sm-8" data-field="City"></dd>
+<dt class="col-sm-4">Estado / Provincia</dt><dd class="col-sm-8" data-field="State"></dd>
+<dt class="col-sm-4">Código postal</dt><dd class="col-sm-8" data-field="PostalCode"></dd>
+<dt class="col-sm-4">País</dt><dd class="col-sm-8" data-field="Country"></dd>
+<dt class="col-sm-4">Predeterminada</dt><dd class="col-sm-8" data-field="IsDefault"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="@Url.Action("Delete")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar dirección</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Seguro que desea eliminar <strong id="deleteName"></strong>? Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/crud.js"></script>
+}

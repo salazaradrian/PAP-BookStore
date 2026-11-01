@@ -1,0 +1,151 @@
+﻿@model IEnumerable<PAP.DataAccess.Inventory>
+@using PAP.Business
+@{
+    ViewBag.Title = "Inventario";
+}
+
+<div id="crud-root" data-details-url="@Url.Action("Details")" data-singular="inventario">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="mb-0">Inventario</h2>
+        <button type="button" class="btn btn-primary" data-crud="create">Agregar</button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="white-space: pre-line;">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Libro</th>
+                    <th>Cantidad en stock</th>
+                    <th>Nivel de reorden</th>
+                    <th>Último reabastecimiento</th>
+                    <th class="text-center">Detalle</th>
+                    <th class="text-center">Editar</th>
+                    <th class="text-center">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(item.Book?.Title)</td>
+                        <td>@item.QuantityInStock</td>
+                        <td>@item.ReorderLevel</td>
+                        <td>@(item.LastRestockedAt?.ToString("yyyy-MM-dd HH:mm"))</td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-secondary" data-crud="details" data-id="@item.Id">Detalle</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary" data-crud="edit" data-id="@item.Id">Editar</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger" data-crud="delete" data-id="@item.Id" data-name="@(item.Book?.Title)">Eliminar</button></td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" class="text-center text-muted">No hay registros.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <form id="entityForm" method="post" data-create-action="@Url.Action("Create")" data-edit-action="@Url.Action("Edit")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_BookId">Libro</label>
+<select class="form-select" id="f_BookId" name="BookId" required>
+<option value="">-- Seleccione --</option>
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Books)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_QuantityInStock">Cantidad en stock</label>
+<input class="form-control" type="number" step="1" id="f_QuantityInStock" name="QuantityInStock" min="0" max="100000000" required value="0" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_ReorderLevel">Nivel de reorden</label>
+<input class="form-control" type="number" step="1" id="f_ReorderLevel" name="ReorderLevel" min="0" max="100000000" required value="5" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_LastRestockedAt">Último reabastecimiento</label>
+<input class="form-control" type="datetime-local" id="f_LastRestockedAt" name="LastRestockedAt" />
+</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de inventario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0">
+<dt class="col-sm-4">Libro</dt><dd class="col-sm-8" data-field="BookTitle"></dd>
+<dt class="col-sm-4">Cantidad en stock</dt><dd class="col-sm-8" data-field="QuantityInStock"></dd>
+<dt class="col-sm-4">Nivel de reorden</dt><dd class="col-sm-8" data-field="ReorderLevel"></dd>
+<dt class="col-sm-4">Último reabastecimiento</dt><dd class="col-sm-8" data-field="LastRestockedAt"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="@Url.Action("Delete")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar inventario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Seguro que desea eliminar <strong id="deleteName"></strong>? Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/crud.js"></script>
+}

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace PAP.Business
 {
-    public class BookManager
+    public partial class BookManager
     {
         private readonly BookRepository _repository;
 

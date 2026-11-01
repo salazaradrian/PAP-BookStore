@@ -1,0 +1,248 @@
+﻿@model IEnumerable<PAP.DataAccess.Book>
+@using PAP.Business
+@{
+    ViewBag.Title = "Libros";
+}
+
+<div id="crud-root" data-details-url="@Url.Action("Details")" data-singular="libro">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h2 class="mb-0">Libros</h2>
+        <button type="button" class="btn btn-primary" data-crud="create">Agregar</button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="white-space: pre-line;">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button></div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autores</th>
+                    <th>Categoría</th>
+                    <th>Género</th>
+                    <th>Editorial</th>
+                    <th>Precio</th>
+                    <th>En stock</th>
+                    <th class="text-center">Detalle</th>
+                    <th class="text-center">Editar</th>
+                    <th class="text-center">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@(string.Join(", ", item.Authors.Select(a => a.FirstName + " " + a.LastName)))</td>
+                        <td>@(item.Category1?.Name)</td>
+                        <td>@(item.Genre1?.Name)</td>
+                        <td>@(item.Publisher1?.Name)</td>
+                        <td>@(item.Price.ToString("N2"))</td>
+                        <td>@(item.IsInStock ? "Sí" : "No")</td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-secondary" data-crud="details" data-id="@item.Id">Detalle</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary" data-crud="edit" data-id="@item.Id">Editar</button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger" data-crud="delete" data-id="@item.Id" data-name="@(item.Title)">Eliminar</button></td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="10" class="text-center text-muted">No hay registros.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <form id="entityForm" method="post" data-create-action="@Url.Action("Create")" data-edit-action="@Url.Action("Edit")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formModalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Title">Título</label>
+<input class="form-control" type="text" id="f_Title" name="Title" maxlength="200" required />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Name">Nombre interno (opcional)</label>
+<input class="form-control" type="text" id="f_Name" name="Name" maxlength="200" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_ISBN">ISBN</label>
+<input class="form-control" type="text" id="f_ISBN" name="ISBN" maxlength="20" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_PublisherId">Editorial</label>
+<select class="form-select" id="f_PublisherId" name="PublisherId">
+<option value="">-- Seleccione --</option>
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Publishers)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_CategoryId">Categoría</label>
+<select class="form-select" id="f_CategoryId" name="CategoryId">
+<option value="">-- Seleccione --</option>
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Categories)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_GenreId">Género</label>
+<select class="form-select" id="f_GenreId" name="GenreId">
+<option value="">-- Seleccione --</option>
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Genres)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Language">Idioma</label>
+<input class="form-control" type="text" id="f_Language" name="Language" maxlength="50" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Pages">Páginas</label>
+<input class="form-control" type="number" step="1" id="f_Pages" name="Pages" min="1" max="100000" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_PublicationDate">Fecha de publicación</label>
+<input class="form-control" type="date" id="f_PublicationDate" name="PublicationDate" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Price">Precio</label>
+<input class="form-control" type="number" step="any" id="f_Price" name="Price" min="0" max="9999999999999" required value="0" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Height">Alto</label>
+<input class="form-control" type="number" step="any" id="f_Height" name="Height" min="0" max="99999999" />
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_Width">Ancho</label>
+<input class="form-control" type="number" step="any" id="f_Width" name="Width" min="0" max="99999999" />
+</div>
+<div class="col-md-6 mb-3">
+<div class="form-check mt-4">
+<input class="form-check-input" type="checkbox" id="f_IsBestSeller" name="IsBestSeller" value="true" />
+<input type="hidden" name="IsBestSeller" value="false" />
+<label class="form-check-label" for="f_IsBestSeller">Más vendido</label>
+</div>
+</div>
+<div class="col-md-6 mb-3">
+<div class="form-check mt-4">
+<input class="form-check-input" type="checkbox" id="f_IsInStock" name="IsInStock" value="true" checked />
+<input type="hidden" name="IsInStock" value="false" />
+<label class="form-check-label" for="f_IsInStock">En stock</label>
+</div>
+</div>
+<div class="col-md-6 mb-3">
+<label class="form-label" for="f_CoverImageUrl">URL de la portada</label>
+<input class="form-control" type="url" id="f_CoverImageUrl" name="CoverImageUrl" maxlength="500" />
+</div>
+<div class="col-12 mb-3">
+<label class="form-label" for="f_Description">Descripción</label>
+<textarea class="form-control" id="f_Description" name="Description" rows="3"></textarea>
+</div>
+<div class="col-12 mb-3">
+<label class="form-label" for="f_AuthorIds">Autores</label>
+<select class="form-select" id="f_AuthorIds" name="AuthorIds" multiple size="5">
+@foreach (var o in (IEnumerable<LookupItem>)ViewBag.Authors)
+{
+<option value="@o.Id">@o.Text</option>
+}
+</select>
+<div class="form-text">Mantenga Ctrl presionado para seleccionar varios autores.</div>
+</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de libro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0">
+<dt class="col-sm-4">Título</dt><dd class="col-sm-8" data-field="Title"></dd>
+<dt class="col-sm-4">Nombre interno (opcional)</dt><dd class="col-sm-8" data-field="Name"></dd>
+<dt class="col-sm-4">ISBN</dt><dd class="col-sm-8" data-field="ISBN"></dd>
+<dt class="col-sm-4">Editorial</dt><dd class="col-sm-8" data-field="PublisherName"></dd>
+<dt class="col-sm-4">Categoría</dt><dd class="col-sm-8" data-field="CategoryName"></dd>
+<dt class="col-sm-4">Género</dt><dd class="col-sm-8" data-field="GenreName"></dd>
+<dt class="col-sm-4">Idioma</dt><dd class="col-sm-8" data-field="Language"></dd>
+<dt class="col-sm-4">Páginas</dt><dd class="col-sm-8" data-field="Pages"></dd>
+<dt class="col-sm-4">Fecha de publicación</dt><dd class="col-sm-8" data-field="PublicationDate"></dd>
+<dt class="col-sm-4">Precio</dt><dd class="col-sm-8" data-field="PriceText"></dd>
+<dt class="col-sm-4">Alto</dt><dd class="col-sm-8" data-field="HeightText"></dd>
+<dt class="col-sm-4">Ancho</dt><dd class="col-sm-8" data-field="WidthText"></dd>
+<dt class="col-sm-4">Más vendido</dt><dd class="col-sm-8" data-field="IsBestSeller"></dd>
+<dt class="col-sm-4">En stock</dt><dd class="col-sm-8" data-field="IsInStock"></dd>
+<dt class="col-sm-4">URL de la portada</dt><dd class="col-sm-8" data-field="CoverImageUrl"></dd>
+<dt class="col-sm-4">Descripción</dt><dd class="col-sm-8" data-field="Description"></dd>
+<dt class="col-sm-4">Creado</dt><dd class="col-sm-8" data-field="CreatedAt"></dd>
+<dt class="col-sm-4">Actualizado</dt><dd class="col-sm-8" data-field="UpdatedAt"></dd>
+<dt class="col-sm-4">Autores</dt><dd class="col-sm-8" data-field="Authors"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="@Url.Action("Delete")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteId" value="0" />
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar libro</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Seguro que desea eliminar <strong id="deleteName"></strong>? Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/crud.js"></script>
+}

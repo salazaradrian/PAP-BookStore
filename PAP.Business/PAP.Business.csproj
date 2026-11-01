@@ -42,6 +42,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookManager.cs" />
+    <Compile Include="AddressManager.cs" />
+    <Compile Include="AuthorManager.cs" />
+    <Compile Include="BookManager.Crud.cs" />
+    <Compile Include="CartItemManager.cs" />
+    <Compile Include="CategoryManager.cs" />
+    <Compile Include="CustomerManager.cs" />
+    <Compile Include="EmployeeManager.cs" />
+    <Compile Include="GenreManager.cs" />
+    <Compile Include="InventoryManager.cs" />
+    <Compile Include="OrderManager.cs" />
+    <Compile Include="OrderItemManager.cs" />
+    <Compile Include="PaymentManager.cs" />
+    <Compile Include="PublisherManager.cs" />
+    <Compile Include="PurchaseOrderManager.cs" />
+    <Compile Include="PurchaseOrderItemManager.cs" />
+    <Compile Include="ReviewManager.cs" />
+    <Compile Include="RoleManager.cs" />
+    <Compile Include="ShoppingCartManager.cs" />
+    <Compile Include="SupplierManager.cs" />
+    <Compile Include="LookupItem.cs" />
+    <Compile Include="ValidationRules.cs" />
+    <Compile Include="PasswordHasher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
