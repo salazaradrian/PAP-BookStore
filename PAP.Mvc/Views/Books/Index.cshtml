@@ -44,9 +44,9 @@
                     <tr>
                         <td>@item.Title</td>
                         <td>@(string.Join(", ", item.Authors.Select(a => a.FirstName + " " + a.LastName)))</td>
-                        <td>@(item.Category1?.Name)</td>
-                        <td>@(item.Genre1?.Name)</td>
-                        <td>@(item.Publisher1?.Name)</td>
+                        <td>@(item.Category1 == null ? "" : item.Category1.Name)</td>
+                        <td>@(item.Genre1 == null ? "" : item.Genre1.Name)</td>
+                        <td>@(item.Publisher1 == null ? "" : item.Publisher1.Name)</td>
                         <td>@(item.Price.ToString("N2"))</td>
                         <td>@(item.IsInStock ? "Sí" : "No")</td>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-outline-secondary" data-crud="details" data-id="@item.Id">Detalle</button></td>

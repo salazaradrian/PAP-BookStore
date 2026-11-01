@@ -42,7 +42,7 @@
                         <td>@item.FirstName</td>
                         <td>@item.LastName</td>
                         <td>@item.Country</td>
-                        <td>@(item.BirthDate?.ToString("yyyy-MM-dd"))</td>
+                        <td>@(item.BirthDate.HasValue ? item.BirthDate.Value.ToString("yyyy-MM-dd") : "")</td>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-outline-secondary" data-crud="details" data-id="@item.Id">Detalle</button></td>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary" data-crud="edit" data-id="@item.Id">Editar</button></td>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger" data-crud="delete" data-id="@item.Id" data-name="@(item.FirstName + " " + item.LastName)">Eliminar</button></td>

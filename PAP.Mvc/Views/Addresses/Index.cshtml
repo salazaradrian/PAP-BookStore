@@ -41,7 +41,7 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@(item.Customer?.FirstName + " " + item.Customer?.LastName)</td>
+                        <td>@(item.Customer.FirstName + " " + item.Customer.LastName)</td>
                         <td>@item.AddressType</td>
                         <td>@item.Street</td>
                         <td>@item.City</td>
