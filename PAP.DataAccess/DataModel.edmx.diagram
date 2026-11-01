@@ -6,6 +6,44 @@
     <edmx:Diagrams>
       <Diagram DiagramId="f09b35283ad3476eb60e3d8462afb800" Name="Diagram1">
         <EntityTypeShape EntityType="BookStoreDBModel.Book" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Address" Width="1.5" PointX="5.625" PointY="7.875" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Author" Width="1.5" PointX="0.75" PointY="15.25" />
+        <EntityTypeShape EntityType="BookStoreDBModel.CartItem" Width="1.5" PointX="7.875" PointY="3.125" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Category" Width="1.5" PointX="0.75" PointY="18.625" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Customer" Width="1.5" PointX="3.375" PointY="5.75" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Employee" Width="1.5" PointX="14.625" PointY="7" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Genre" Width="1.5" PointX="0.75" PointY="12.75" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Inventory" Width="1.5" PointX="3" PointY="2.25" />
+        <EntityTypeShape EntityType="BookStoreDBModel.OrderItem" Width="1.5" PointX="10.125" PointY="4.25" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Order" Width="1.5" PointX="7.875" PointY="6.375" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Payment" Width="1.5" PointX="10.125" PointY="10.375" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Publisher" Width="1.5" PointX="0.75" PointY="9.625" />
+        <EntityTypeShape EntityType="BookStoreDBModel.PurchaseOrderItem" Width="1.5" PointX="16.875" PointY="3.125" />
+        <EntityTypeShape EntityType="BookStoreDBModel.PurchaseOrder" Width="1.5" PointX="14.625" PointY="1" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Review" Width="1.5" PointX="5.625" PointY="3.875" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Role" Width="1.5" PointX="12.375" PointY="7.5" />
+        <EntityTypeShape EntityType="BookStoreDBModel.ShoppingCart" Width="1.5" PointX="5.625" PointY="11.75" />
+        <EntityTypeShape EntityType="BookStoreDBModel.Supplier" Width="1.5" PointX="12.375" PointY="1" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Addresses_Customers" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Orders_Addresses" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Books_Categories" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Books_Genres" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Books_Publishers" />
+        <AssociationConnector Association="BookStoreDBModel.FK_CartItems_Books" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Inventory_Books" />
+        <AssociationConnector Association="BookStoreDBModel.FK_OrderItems_Books" />
+        <AssociationConnector Association="BookStoreDBModel.FK_POItems_Books" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Reviews_Books" />
+        <AssociationConnector Association="BookStoreDBModel.FK_CartItems_Carts" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Orders_Customers" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Reviews_Customers" />
+        <AssociationConnector Association="BookStoreDBModel.FK_ShoppingCarts_Customers" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Employees_Roles" />
+        <AssociationConnector Association="BookStoreDBModel.FK_OrderItems_Orders" />
+        <AssociationConnector Association="BookStoreDBModel.FK_Payments_Orders" />
+        <AssociationConnector Association="BookStoreDBModel.FK_POItems_PurchaseOrders" />
+        <AssociationConnector Association="BookStoreDBModel.FK_PurchaseOrders_Suppliers" />
+        <AssociationConnector Association="BookStoreDBModel.BookAuthors" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
