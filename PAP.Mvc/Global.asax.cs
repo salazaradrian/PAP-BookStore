@@ -19,8 +19,8 @@ namespace PAP.Mvc
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Acepta "." o "," como separador decimal en los formularios CRUD.
-            ModelBinders.Binders.Add(typeof(decimal), new InvariantDecimalModelBinder());
-            ModelBinders.Binders.Add(typeof(decimal?), new InvariantDecimalModelBinder());
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(decimal), new InvariantDecimalModelBinder());
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(decimal?), new InvariantDecimalModelBinder());
         }
     }
 }
